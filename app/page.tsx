@@ -8,12 +8,8 @@ interface UploadStatus {
   status: 'idle' | 'uploading' | 'processing' | 'ready' | 'error'
   message?: string
   productId?: string
-<<<<<<< HEAD
   shopifyId?: string
   shopifyUrl?: string
-=======
-  gelatoId?: string
->>>>>>> dededd1 (Please p)
   mode?: 'DEMO' | 'PRODUCTION'
   metadata?: {
     title: string
@@ -31,11 +27,7 @@ export default function HomePage() {
     if (file) {
       setUploadedFile(file)
       setPreviewUrl(URL.createObjectURL(file))
-<<<<<<< HEAD
       handleFileUpload(file)
-=======
-      handleUpload(file)
->>>>>>> dededd1 (Please p)
     }
   }, [])
 
@@ -49,7 +41,6 @@ export default function HomePage() {
     multiple: false
   })
 
-<<<<<<< HEAD
   const handleFileUpload = async (file: File) => {
     try {
       setUploadStatus({ status: 'uploading', message: 'Uploading file to storage...' })
@@ -75,60 +66,29 @@ export default function HomePage() {
 
       // Step 2: Create product using the uploaded file's public URL
       const orchestratorResponse = await fetch('/api/orchestrator', {
-=======
-  const handleUpload = async (file: File) => {
-    try {
-      setUploadStatus({ status: 'uploading', message: 'Uploading file...' })
-
-      // In a real implementation, you'd upload to Supabase Storage first
-      // For demo, we'll simulate with a public URL
-      const mockPublicUrl = `https://cdn.example.com/${file.name}`
-
-      setUploadStatus({ status: 'processing', message: 'Creating product variants...' })
-
-      // Call the orchestrator Edge Function
-      const response = await fetch('/api/orchestrator', {
->>>>>>> dededd1 (Please p)
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           file: {
-<<<<<<< HEAD
             publicUrl: uploadResult.publicUrl,
             filename: uploadResult.filename,
             contentType: uploadResult.contentType,
             sizeBytes: uploadResult.sizeBytes
-=======
-            publicUrl: mockPublicUrl,
-            filename: file.name,
-            contentType: file.type,
-            sizeBytes: file.size
->>>>>>> dededd1 (Please p)
           }
         })
       })
 
-<<<<<<< HEAD
       const result = await orchestratorResponse.json()
-=======
-      const result = await response.json()
->>>>>>> dededd1 (Please p)
 
       if (result.success) {
         setUploadStatus({
           status: result.status === 'READY' ? 'ready' : 'processing',
-<<<<<<< HEAD
           message: result.message || (result.status === 'READY' ? 'Product created successfully!' : 'Product created! Waiting for variants to be ready...'),
           productId: result.productId,
           shopifyId: result.shopifyId,
           shopifyUrl: result.shopifyUrl,
-=======
-          message: result.status === 'READY' ? 'Product created successfully!' : 'Product created! Waiting for variants to be ready...',
-          productId: result.productId,
-          gelatoId: result.gelatoId,
->>>>>>> dededd1 (Please p)
           mode: result.mode,
           metadata: result.metadata
         })
@@ -138,11 +98,7 @@ export default function HomePage() {
           pollForStatus(result.productId)
         }
       } else {
-<<<<<<< HEAD
         throw new Error(result.error || 'Product creation failed')
-=======
-        throw new Error(result.error || 'Upload failed')
->>>>>>> dededd1 (Please p)
       }
     } catch (error) {
       console.error('Upload error:', error)
@@ -154,18 +110,12 @@ export default function HomePage() {
   }
 
   const pollForStatus = async (productId: string) => {
-<<<<<<< HEAD
     const maxPolls = 30
     let pollCount = 0
-=======
-    const maxAttempts = 30
-    let attempts = 0
->>>>>>> dededd1 (Please p)
 
     const poll = async () => {
       try {
         const response = await fetch(`/api/products/${productId}`)
-<<<<<<< HEAD
         const data = await response.json()
 
         if (data.status === 'READY') {
@@ -191,44 +141,6 @@ export default function HomePage() {
           status: 'error',
           message: 'Error checking product status'
         }))
-=======
-        const product = await response.json()
-
-        if (product.status === 'READY') {
-          setUploadStatus({
-            status: 'ready',
-            message: 'Product ready! All variants created successfully.',
-            productId,
-            gelatoId: product.gelato_id,
-            metadata: uploadStatus.metadata
-          })
-          return
-        }
-
-        if (product.status === 'ERROR') {
-          setUploadStatus({
-            status: 'error',
-            message: 'Product creation failed. Please try again.'
-          })
-          return
-        }
-
-        attempts++
-        if (attempts < maxAttempts) {
-          setTimeout(poll, 2000) // Poll every 2 seconds
-        } else {
-          setUploadStatus({
-            status: 'error',
-            message: 'Timeout waiting for product to be ready.'
-          })
-        }
-      } catch (error) {
-        console.error('Polling error:', error)
-        attempts++
-        if (attempts < maxAttempts) {
-          setTimeout(poll, 2000)
-        }
->>>>>>> dededd1 (Please p)
       }
     }
 
@@ -255,7 +167,6 @@ export default function HomePage() {
     }
   }
 
-<<<<<<< HEAD
   const renderStatus = () => {
     switch (uploadStatus.status) {
       case 'uploading':
@@ -333,8 +244,6 @@ export default function HomePage() {
     }
   }
 
-=======
->>>>>>> dededd1 (Please p)
   return (
     <div className="max-w-4xl mx-auto">
       {/* Hero Section */}
@@ -356,11 +265,7 @@ export default function HomePage() {
           </span>
           <span className="flex items-center">
             <CheckCircle className="w-4 h-4 mr-1 text-green-500" />
-<<<<<<< HEAD
             Shopify Integration
-=======
-            Gelato Integration
->>>>>>> dededd1 (Please p)
           </span>
         </div>
       </div>
@@ -456,19 +361,11 @@ export default function HomePage() {
               </div>
             )}
 
-<<<<<<< HEAD
             {uploadStatus.shopifyId && (
               <div className="flex items-center justify-between">
                 <span className="text-gray-600">Shopify ID:</span>
                 <code className="text-sm bg-gray-100 px-2 py-1 rounded">
                   {uploadStatus.shopifyId}
-=======
-            {uploadStatus.gelatoId && (
-              <div className="flex items-center justify-between">
-                <span className="text-gray-600">Gelato ID:</span>
-                <code className="text-sm bg-gray-100 px-2 py-1 rounded">
-                  {uploadStatus.gelatoId}
->>>>>>> dededd1 (Please p)
                 </code>
               </div>
             )}
@@ -492,127 +389,63 @@ export default function HomePage() {
           )}
 
           {/* Success Actions */}
-<<<<<<< HEAD
-          {uploadStatus.status === 'ready' && uploadStatus.shopifyId && (
+          {uploadStatus.status === 'ready' && uploadStatus.shopifyUrl && (
             <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center mb-3">
                 <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
                 <h4 className="font-semibold text-green-800">Product Created Successfully!</h4>
               </div>
-              
-              {uploadStatus.message && (
-                <p className="text-green-700 mb-4">{uploadStatus.message}</p>
-              )}
-              
-              <div className="flex space-x-4">
-                {uploadStatus.shopifyUrl && (
-                  <a
-                    href={uploadStatus.shopifyUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-primary"
-                  >
-                    View in Shopify Admin
-                  </a>
-                )}
-                <a
-                  href={`/products/${uploadStatus.productId}`}
-                  className="btn btn-secondary"
-                >
-                  View Product Details
-                </a>
-              </div>
-            </div>
-          )}
-
-          {/* Error Actions */}
-          {uploadStatus.status === 'error' && (
-            <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <div className="flex items-center mb-2">
-                <AlertCircle className="w-5 h-5 text-red-500 mr-2" />
-                <h4 className="font-semibold text-red-800">Upload Failed</h4>
-              </div>
-              {uploadStatus.message && (
-                <p className="text-red-700">{uploadStatus.message}</p>
-              )}
-=======
-          {uploadStatus.status === 'ready' && uploadStatus.gelatoId && (
-            <div className="mt-6 flex space-x-4">
+              <p className="text-green-700 text-sm mb-4">
+                Your artwork has been processed and product variants have been created in Shopify.
+              </p>
               <a
-                href={`https://dashboard.gelato.com/products/${uploadStatus.gelatoId}`}
+                href={uploadStatus.shopifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn btn-primary"
+                className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
               >
-                View in Gelato Dashboard
+                View Product in Shopify
+                <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
               </a>
-              <a
-                href={`/products/${uploadStatus.productId}`}
-                className="btn btn-secondary"
-              >
-                View Product Details
-              </a>
->>>>>>> dededd1 (Please p)
             </div>
           )}
         </div>
       )}
 
-      {/* Mode Information */}
-      {uploadStatus.mode === 'DEMO' && (
-        <div className="card bg-yellow-50 border-yellow-200">
-          <h3 className="text-lg font-semibold text-yellow-800 mb-3">
-            🚀 Demo Mode Active
-          </h3>
-          <div className="text-sm text-yellow-700 space-y-2">
-            <p>
-<<<<<<< HEAD
-              This demo creates <strong>2 art print variants</strong> (A4 and 50×70cm) in premium paper without frames.
-            </p>
-            <p>
-              The full production version would create <strong>20+ variants</strong> across all size, material, and frame combinations.
-            </p>
-            <p>
-              Products are created in <strong>local database only</strong> - no Shopify store integration in demo mode.
-=======
-              This demo creates <strong>2 poster variants</strong> (A4 and 50×70cm) in premium paper without frames.
-            </p>
-            <p>
-              The full production version would create <strong>20-30 variants</strong> across all size, material, and frame combinations.
-            </p>
-            <p>
-              Products are created in <strong>Gelato Sandbox</strong> environment - no real printing costs incurred.
->>>>>>> dededd1 (Please p)
-            </p>
+      {/* Features Section */}
+      <div className="grid md:grid-cols-3 gap-6 mt-12">
+        <div className="text-center p-6">
+          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <Upload className="w-6 h-6 text-blue-600" />
           </div>
+          <h3 className="font-semibold text-gray-900 mb-2">Easy Upload</h3>
+          <p className="text-gray-600 text-sm">
+            Simply drag and drop your artwork files. We support multiple formats and large files.
+          </p>
         </div>
-      )}
-
-      {uploadStatus.mode === 'PRODUCTION' && (
-        <div className="card bg-green-50 border-green-200">
-          <h3 className="text-lg font-semibold text-green-800 mb-3">
-            🚀 Production Mode Active
-          </h3>
-          <div className="text-sm text-green-700 space-y-2">
-            <p>
-              Your products are being created with <strong>full variant coverage</strong> across all available sizes, materials, and frame options.
-            </p>
-            <p>
-<<<<<<< HEAD
-              Products are integrated with <strong>Shopify's Admin API</strong> for direct store management.
-            </p>
-            <p>
-              All generated products will be available for immediate sale in your Shopify store.
-=======
-              Products are integrated with <strong>Gelato's production network</strong> for real-world fulfillment.
-            </p>
-            <p>
-              All generated products will be available for immediate sale and printing.
->>>>>>> dededd1 (Please p)
-            </p>
+        
+        <div className="text-center p-6">
+          <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-6 h-6 text-green-600" />
           </div>
+          <h3 className="font-semibold text-gray-900 mb-2">AI Processing</h3>
+          <p className="text-gray-600 text-sm">
+            Our AI analyzes your artwork and generates product titles, descriptions, and variants.
+          </p>
         </div>
-      )}
+        
+        <div className="text-center p-6">
+          <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
+            <Image className="w-6 h-6 text-purple-600" />
+          </div>
+          <h3 className="font-semibold text-gray-900 mb-2">Auto Variants</h3>
+          <p className="text-gray-600 text-sm">
+            Multiple product sizes and variations are created automatically in your Shopify store.
+          </p>
+        </div>
+      </div>
     </div>
   )
-} 
+}
